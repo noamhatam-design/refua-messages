@@ -1,5 +1,15 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
+const http = require('http');
+
+// שרת אינטרנט מינימלי כדי ש-Render ידע שהאפליקציה פעילה ולא יכשיל את הפריסה
+const PORT = process.env.PORT || 3000;
+http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('WhatsApp Bot is running 24/7!');
+}).listen(PORT, () => {
+    console.log(`Web server listening on port ${PORT}`);
+});
 
 const client = new Client({
     authStrategy: new LocalAuth(),
@@ -33,8 +43,9 @@ const REQUIRED_KEYWORDS = [
 let startTime = Math.floor(Date.now() / 1000);
 
 client.on('qr', qr => {
-    console.log('--- סרוק את קוד ה-QR דרך ה-Logs של השרת ---');
+    console.log('================= סרוק את קוד ה-QR =================');
     qrcode.generate(qr, { small: true });
+    console.log('====================================================');
 });
 
 client.on('ready', () => {
